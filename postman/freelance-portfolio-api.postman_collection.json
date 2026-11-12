@@ -1,0 +1,359 @@
+{
+  "info": {
+    "_postman_id": "50d6578d-bfec-4515-8589-c246abffb4c7",
+    "name": "Freelance Portfolio API — ЛР №28",
+    "description": "CRUD-запросы к /api/projects (Express + MongoDB). Запросы выполняются по порядку: POST сохраняет ID проекта в переменную projectId.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. POST — создать проект",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "description": "Создание новой сущности. ID созданного проекта сохраняется в переменную {{projectId}}.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Маркетплейс handmade-товаров\",\n  \"description\": \"Каталог, корзина и кабинет мастера. Загрузка страниц стала быстрее на 40 %.\",\n  \"imageUrl\": \"/assets/project-marketplace.svg\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 201 Created', () => pm.response.to.have.status(201));",
+              "const p = pm.response.json();",
+              "pm.test('Ответ содержит _id и title', () => { pm.expect(p).to.have.property('_id'); pm.expect(p.title).to.eql('Маркетплейс handmade-товаров'); });",
+              "pm.collectionVariables.set('projectId', p._id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. POST — создать второй проект",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"CRM для автосервиса\",\n  \"description\": \"Запись клиентов, учёт запчастей и уведомления в Telegram.\",\n  \"imageUrl\": \"/assets/project-crm.svg\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 201 Created', () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. GET — список всех проектов",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "description": ""
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Ответ — массив проектов', () => { pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. GET — проект по ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/{{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            "{{projectId}}"
+          ]
+        },
+        "description": ""
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Возвращён нужный проект', () => pm.expect(pm.response.json()._id).to.eql(pm.collectionVariables.get('projectId')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. PUT — обновить проект",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/{{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            "{{projectId}}"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Маркетплейс handmade-товаров 2.0\",\n  \"description\": \"Добавлены онлайн-оплата и личный кабинет покупателя.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Название обновлено', () => pm.expect(pm.response.json().title).to.eql('Маркетплейс handmade-товаров 2.0'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. DELETE — удалить проект",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/{{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            "{{projectId}}"
+          ]
+        },
+        "description": ""
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Сообщение об удалении', () => pm.expect(pm.response.json().message).to.eql('Проект удалён'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. GET — удалённый проект (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/{{projectId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            "{{projectId}}"
+          ]
+        },
+        "description": ""
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 404 Not Found', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. POST — без title (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"Проект без названия\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 400 Bad Request', () => pm.response.to.have.status(400));",
+              "pm.test('Ошибка валидации поля title', () => pm.expect(pm.response.json().errors).to.have.property('title'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. GET — некорректный ID (400)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/123",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            "123"
+          ]
+        },
+        "description": ""
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Статус 400 Bad Request', () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "projectId",
+      "value": ""
+    }
+  ]
+}
